@@ -1,2 +1,2 @@
 # playlistify
-Turn your sentences to spotify playlistss
+Turn your sentences to spotify playlists
