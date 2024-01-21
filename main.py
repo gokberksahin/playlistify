@@ -3,7 +3,7 @@ import secrets
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
@@ -67,6 +67,10 @@ async def callback(request: Request):
     
     # Finally redirect to the index page
     return RedirectResponse("/")
+
+@app.post("/playlist")
+def playlist(sentence: str = Form(...)):
+    return {"status": "ok"}
 
 # Healthcheck endpoint to make sure the server is running
 @app.get("/healthcheck")
