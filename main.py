@@ -8,6 +8,10 @@ from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from session_cache_handler import SessionCacheHandler
+from fastapi.templating import Jinja2Templates
+
+# Jinja2 template engine
+templates = Jinja2Templates(directory="templates")
 
 
 load_dotenv('.env')
@@ -34,20 +38,12 @@ app.add_middleware(
 
 @app.get("/")
 def index(request: Request):
-    # Get spotify token info from session
-    spotify_token_info = request.session.get("spotify_token_info")
     # Get the SpotifyOAuth object
     auth_manager = _get_spotify_oauth(request)
-    # Check if token is valid
-    if auth_manager.validate_token(spotify_token_info):
-        # Use access token to create Spotify client
-        spotify_client = spotipy.Spotify(auth=spotify_token_info['access_token'])
-
-        # Example: Fetch user profile data
-        user_data = spotify_client.me()
-        return user_data
-
-    return {"Hello": "World"}
+    # Check if we have a cached token
+    is_authenticated = bool(auth_manager.get_cached_token())
+    # Render index.html template
+    return templates.TemplateResponse("index.html", {"request": request,  "is_authenticated": is_authenticated})
 
 @app.get("/login")
 def login(request: Request):
