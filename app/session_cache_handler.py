@@ -1,5 +1,6 @@
 from spotipy import CacheHandler
 
+
 class SessionCacheHandler(CacheHandler):
     def __init__(self, session):
         self.session = session
