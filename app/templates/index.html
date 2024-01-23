@@ -11,7 +11,7 @@
                     <div class="relative">
                         <h1 class="text-2xl font-bold text-gray-700 mb-2">Welcome to the Home Page</h1>
                         {% if is_authenticated %}
-                            <form action="/playlist" method="post" class="pt-2">
+                            <form id="sentence-form" action="/playlist" method="post" class="pt-2">
                         {% else %}
                             <form action="/login" method="get" class="pt-2">
                         {% endif %}
@@ -39,5 +39,22 @@
             </div>
         </div>
     </div>
+    <script>
+        document.getElementById('sentence-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // This will prevent the default form submission
+    
+            const formData = new FormData(this);
+            fetch('/playlist', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Process your response here
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+    
 </body>
 </html>
