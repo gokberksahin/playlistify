@@ -7,7 +7,7 @@ Make sure that you are in your virtual python env so you don't dump all packages
 pip freeze > requirements.txt
 ```
 
-# How to create a virtual env and activate it?
+## How to create a virtual env and activate it?
 ```
 python3 -m venv env
 source env/bin/activate
