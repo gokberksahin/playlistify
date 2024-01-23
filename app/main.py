@@ -1,3 +1,4 @@
+import spotipy
 import secrets
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from session_cache_handler import SessionCacheHandler
 from fastapi.templating import Jinja2Templates
 from typing import Annotated
+from playlistfy import Playlistify
 
 # Jinja2 template engine
 templates = Jinja2Templates(directory="templates")
@@ -39,12 +41,16 @@ app.add_middleware(
 # Dependencies
 def get_spotify_oauth(request: Request):
     return SpotifyOAuth(
-        scope="user-library-modify",
+        scope="playlist-modify-public,playlist-modify-private",
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
         redirect_uri=REDIRECT_URI,
         cache_handler=SessionCacheHandler(request.session),
     )
+
+
+def get_spotify_client(auth_manager: SpotifyOAuth = Depends(get_spotify_oauth)):
+    return spotipy.Spotify(auth_manager=auth_manager)
 
 
 @app.get("/")
@@ -84,8 +90,15 @@ async def callback(
 
 
 @app.post("/playlist")
-def playlist(sentence: str = Form(...)):
-    return {"status": "ok"}
+def playlist(
+    client: Annotated[spotipy.Spotify, Depends(get_spotify_client)],
+    sentence: str = Form(...),
+    playlist_name: str = Form(...),
+):
+    me = client.me()
+    playlistfy = Playlistify(me["id"], client, playlist_name, "Playlistfy")
+    playlist = playlistfy.create_playlist(sentence)
+    return playlist
 
 
 # Healthcheck endpoint to make sure the server is running
