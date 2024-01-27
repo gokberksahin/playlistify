@@ -1,41 +1,27 @@
 import spotipy
-from playlistfy import Playlistify, Playlist
+from playlistfy import Playlistify, Playlist, Track
 from unittest.mock import Mock
 
 
-def test_create_playlist():
+def test_create_playlist_happy_path():
+    """Test the happy path where all search queries return a track"""
+
+    input_sentence = "lorem ipsum dolor sit amet consectetur adipiscing elit"
+    track1_name = "lorem ipsum dolor sit amet"
+    track2_name = "consectetur adipiscing elit"
+    expected_tracks = [
+        Track(name=track1_name, uri=f"uri_{track1_name}"),
+        Track(name=track2_name, uri=f"uri_{track2_name}"),
+    ]
+
     mock_client = Mock(spec=spotipy.Spotify)
-    mock_client.search.return_value = {
-        "tracks": {
-            "items": [
-                {
-                    "name": "song1",
-                    "artists": [{"name": "artist1"}],
-                    "uri": "uri1",
-                },
-                {
-                    "name": "song2",
-                    "artists": [{"name": "artist2"}],
-                    "uri": "uri2",
-                },
-                {
-                    "name": "song3",
-                    "artists": [{"name": "artist3"}],
-                    "uri": "uri3",
-                },
-                {
-                    "name": "song4",
-                    "artists": [{"name": "artist4"}],
-                    "uri": "uri4",
-                },
-                {
-                    "name": "song5",
-                    "artists": [{"name": "artist5"}],
-                    "uri": "uri5",
-                },
-            ]
-        }
-    }
+
+    # Assume spotify track search will return a song that matches the word every time
+    def search_side_effect(word, limit=50):
+        return {"tracks": {"items": [{"name": word, "uri": f"uri_{word}"}]}}
+
+    mock_client.search.side_effect = search_side_effect
+
     mock_client.user_playlist_create.return_value = {
         "name": "test_playlist",
         "description": "test_descirption",
@@ -47,10 +33,15 @@ def test_create_playlist():
     playlistify = Playlistify(
         "test_user", mock_client, "test_playlist", "test_descirption"
     )
-    playlist = playlistify.create_playlist("song1 song2 song3")
+    playlist = playlistify.create_playlist(input_sentence)
     assert playlist == Playlist(
         name="test_playlist",
         description="test_descirption",
         id="id",
         uri="uri",
+        tracks=expected_tracks,
     )
+
+def test_create_playlisy_sadge_path():
+    """Test the sadge path where it's impossible to create playlist for sentence"""
+    

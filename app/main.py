@@ -49,19 +49,23 @@ def get_spotify_oauth(request: Request):
     )
 
 
-def get_spotify_client(auth_manager: SpotifyOAuth = Depends(get_spotify_oauth)):
+def get_spotify_client(
+    auth_manager: SpotifyOAuth = Depends(get_spotify_oauth),
+):
     return spotipy.Spotify(auth_manager=auth_manager)
 
 
 @app.get("/")
 def index(
-    auth_manager: Annotated[SpotifyOAuth, Depends(get_spotify_oauth)], request: Request
+    auth_manager: Annotated[SpotifyOAuth, Depends(get_spotify_oauth)],
+    request: Request,
 ):
     # Check if we have a cached token
     is_authenticated = bool(auth_manager.get_cached_token())
     # Render index.html template
     return templates.TemplateResponse(
-        "index.html", {"request": request, "is_authenticated": is_authenticated}
+        "index.html",
+        {"request": request, "is_authenticated": is_authenticated},
     )
 
 
@@ -72,9 +76,10 @@ def login(auth_manager: Annotated[SpotifyOAuth, Depends(get_spotify_oauth)]):
 
 @app.get("/callback")
 async def callback(
-    auth_manager: Annotated[SpotifyOAuth, Depends(get_spotify_oauth)], request: Request
+    auth_manager: Annotated[SpotifyOAuth, Depends(get_spotify_oauth)],
+    request: Request,
 ):
-    # Authorization code that spotify sends back https://developer.spotify.com/documentation/web-api/tutorials/code-flow
+    # Authorization code that spotify sends back https://shorturl.at/gzSW9
     code = request.query_params.get("code")
     if not code:
         return {"Error": "No code provided"}
