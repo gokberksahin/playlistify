@@ -78,7 +78,7 @@ class Playlistify:
         words = self._parse_sentence(sentence)
         ok = self._backtrack(words, tracks, 0)
         if not ok:
-            raise Exception("Could not create playlist for sentence")
+            raise ValueError("Could not create playlist for sentence")
         return tracks
 
     def create_playlist(self, sentence: str) -> Playlist:
