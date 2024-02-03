@@ -11,6 +11,7 @@ from session_cache_handler import SessionCacheHandler
 from fastapi.templating import Jinja2Templates
 from typing import Annotated
 from playlistfy import Playlistify
+from fastapi.staticfiles import StaticFiles
 
 # Jinja2 template engine
 templates = Jinja2Templates(directory="templates")
@@ -22,6 +23,8 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 REDIRECT_URI = os.environ.get("REDIRECT_URI")
 
 app = FastAPI()  # FastAPI instance
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 # Middlewares
 app.add_middleware(SessionMiddleware, secret_key=secrets.token_urlsafe(32))
 # For more info on CORS: https://fastapi.tiangolo.com/tutorial/cors/?h=cors
@@ -64,7 +67,7 @@ def index(
     is_authenticated = bool(auth_manager.get_cached_token())
     # Render index.html template
     return templates.TemplateResponse(
-        "index.html",
+        "index.j2",
         {"request": request, "is_authenticated": is_authenticated},
     )
 
