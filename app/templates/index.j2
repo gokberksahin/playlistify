@@ -17,7 +17,7 @@
                     <div class="w-full p-4">
                         <div class="relative">
                             <h1 class="text-2xl font-bold text-gray-700 mb-2">Welcome to the Home Page</h1>
-                            <form id="sentence-form" action={{ url_for("playlist") if is_authenticated else url_for('login') }} method={{ 'post' if is_authenticated else 'get' }} class="pt-2">
+                            <form id="sentence-form" action={{ "/playlist" if is_authenticated else "/login" }} method={{ 'post' if is_authenticated else 'get' }} class="pt-2">
                                 <div class="mb-4">
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="text_field">Enter a sentence</label>
                                     <input type="text"

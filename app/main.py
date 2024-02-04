@@ -13,6 +13,7 @@ from typing import Annotated
 from playlistfy import Playlistify
 from fastapi.staticfiles import StaticFiles
 
+
 # Jinja2 template engine
 templates = Jinja2Templates(directory="templates")
 
@@ -31,6 +32,7 @@ app.add_middleware(SessionMiddleware, secret_key=secrets.token_urlsafe(32))
 origins = [
     "http://localhost:3000",
     "http://localhost:8000",
+    "https://playlistify.fly.dev",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +41,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Dependencies
 def get_spotify_oauth(request: Request):
