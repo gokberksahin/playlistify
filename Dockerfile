@@ -1,20 +1,22 @@
 FROM python:3.9
 
-WORKDIR /code
+WORKDIR /playlistify
 
 # Requirements
 COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
+# Install Node.js
+RUN apt update && apt install -y nodejs npm
+
 # Copy the fastapi app
-COPY ./app /code/app
+COPY . /playlistify
 
+# Install npm dependencies
+RUN npm install -D tailwindcss daisyui@latest
 # Compile and minify tailwind for production
-RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64
-RUN chmod +x ./tailwindcss-linux-x64
-RUN mv ./tailwindcss-linux-x64 ./tailwindcss
-RUN ./tailwindcss -i /code/app/static/css/input.css -o /code/app/static/css/tailwind.css -c /code/app/tailwind.config.js --minify
+RUN npx tailwindcss -i ./app/static/css/index.css -o ./app/static/css/tailwind.css --minify
 
-WORKDIR /code/app
+WORKDIR /playlistify/app
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--proxy-headers"]

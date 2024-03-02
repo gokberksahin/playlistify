@@ -1,0 +1,25 @@
+{
+  "name": "playlistify",
+  "version": "1.0.0",
+  "description": "Turn your sentences to spotify playlists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch-css": "npx tailwindcss -i ./app/static/css/index.css -o ./app/static/css/tailwind.css --watch",
+    "build-css": "npx tailwindcss -i ./app/static/css/index.css -o ./app/static/css/tailwind.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gokberksahin/playlistify.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gokberksahin/playlistify/issues"
+  },
+  "homepage": "https://github.com/gokberksahin/playlistify#readme",
+  "devDependencies": {
+    "daisyui": "^4.6.1",
+    "tailwindcss": "^3.4.1"
+  }
+}

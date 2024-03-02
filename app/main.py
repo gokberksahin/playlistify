@@ -102,10 +102,9 @@ async def callback(
 def playlist(
     client: Annotated[spotipy.Spotify, Depends(get_spotify_client)],
     sentence: str = Form(...),
-    playlist_name: str = Form(...),
 ):
     me = client.me()
-    playlistfy = Playlistify(me["id"], client, playlist_name, "Playlistfy")
+    playlistfy = Playlistify(me["id"], client, sentence, "Playlistfy")
     playlist = playlistfy.create_playlist(sentence)
     return playlist
 
